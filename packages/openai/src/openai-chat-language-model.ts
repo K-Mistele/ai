@@ -283,15 +283,12 @@ export class OpenAIChatLanguageModel implements LanguageModelV1 {
     const { messages: rawPrompt, ...rawSettings } = args;
     const choice = response.choices[0];
 
-    const providerMetadata =
-      response.usage?.completion_tokens_details?.reasoning_tokens != null
-        ? {
-            openai: {
-              reasoningTokens:
-                response.usage?.completion_tokens_details?.reasoning_tokens,
-            },
-          }
-        : undefined;
+    const providerMetadata = {
+      openai: {
+        reasoningTokens: response.usage?.completion_tokens_details?.reasoning_tokens,
+        cachedTokens: response.usage?.prompt_tokens_details?.cached_tokens
+      }
+    }
 
     return {
       text: choice.message.content ?? undefined,
